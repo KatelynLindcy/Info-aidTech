@@ -1,0 +1,74 @@
+import json
+
+class Task:
+    def __init__(self, title, description, status="Pending"):
+        self.title = title
+        self.description = description
+        self.status = status
+
+class ToDoList:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, task):
+        self.tasks.append(task)
+
+    def delete_task(self, title):
+        for task in self.tasks:
+            if task.title == title:
+                self.tasks.remove(task)
+                return True
+        return False
+
+    def view_tasks(self):
+        for task in self.tasks:
+            print(f"Title: {task.title}, Description: {task.description}, Status: {task.status}")
+
+    def save_tasks(self, filename):
+        with open(filename, 'w') as file:
+            tasks_data = []
+            for task in self.tasks:
+                tasks_data.append({
+                    'title': task.title,
+                    'description': task.description,
+                    'status': task.status
+                })
+            json.dump(tasks_data, file)
+
+    def load_tasks(self, filename):
+        with open(filename, 'r') as file:
+            tasks_data = json.load(file)
+            self.tasks = []
+            for task_data in tasks_data:
+                self.tasks.append(Task(task_data['title'], task_data['description'], task_data['status']))
+
+# Test the app
+if __name__ == "__main__":
+    todo_list = ToDoList()
+
+    # Add tasks
+    todo_list.add_task(Task("Task 1", "Description of Task 1"))
+    todo_list.add_task(Task("Task 2", "Description of Task 2"))
+
+    # View tasks
+    print("Current tasks:")
+    todo_list.view_tasks()
+
+    # Delete task
+    deleted = todo_list.delete_task("Task 1")
+    if deleted:
+        print("Task deleted successfully.")
+    else:
+        print("Task not found.")
+
+    # View tasks after deletion
+    print("Tasks after deletion:")
+    todo_list.view_tasks()
+
+    # Save tasks to file
+    todo_list.save_tasks("tasks.json")
+
+    # Load tasks from file
+    print("Loading tasks from file:")
+    todo_list.load_tasks("tasks.json")
+    todo_list.view_tasks()
