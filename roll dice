@@ -1,0 +1,41 @@
+import tkinter as tk
+from random import randint
+
+class DiceRollerApp:
+    def __init__(self, master):
+        self.master = master
+        master.title("Dice Roller App")
+
+        self.label = tk.Label(master, text="Number of Dice:")
+        self.label.pack()
+
+        self.dice_count = tk.Entry(master)
+        self.dice_count.pack()
+
+        self.roll_button = tk.Button(master, text="Roll Dice", command=self.roll_dice)
+        self.roll_button.pack()
+
+        self.result_label = tk.Label(master, text="")
+        self.result_label.pack()
+
+        self.quit_button = tk.Button(master, text="Quit", command=master.quit)
+        self.quit_button.pack()
+
+    def roll_dice(self):
+        try:
+            num_dice = int(self.dice_count.get())
+            if num_dice <= 0:
+                raise ValueError
+            rolls = [randint(1, 6) for _ in range(num_dice)]
+            result_str = f"Rolling {num_dice} dice: {' '.join(map(str, rolls))}"
+            self.result_label.config(text=result_str)
+        except ValueError:
+            self.result_label.config(text="Please enter a valid number of dice.")
+
+def main():
+    root = tk.Tk()
+    app = DiceRollerApp(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
